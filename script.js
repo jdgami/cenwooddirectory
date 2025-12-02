@@ -1,41 +1,46 @@
 const quoteTextElement = document.getElementById('quote-text');
 const quoteAuthorElement = document.getElementById('quote-author');
-const API_URL = 'https://zenquotes.io/api/random';
+
+// **NEW API URL: Quotable API**
+const API_URL = 'https://api.quotable.io/random'; 
 
 /**
- * Fetches a random quote from the Zen Quotes API and updates the DOM.
+ * Fetches a random quote from the Quotable API and updates the DOM.
  */
 async function fetchAndDisplayQuote() {
     try {
-        // Show a temporary loading message
         quoteTextElement.textContent = "Fetching inspiration...";
         quoteAuthorElement.textContent = "";
 
-        // 1. Fetch the data
         const response = await fetch(API_URL);
         
-        // 2. Parse the JSON response
+        // Throw an error if the network response was not successful (e.g., 404, 500)
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
         const data = await response.json();
         
-        // The API returns an array with one object, so we access index 0
-        const quote = data[0]; 
-
-        // 3. Update the HTML elements with the new quote
-        quoteTextElement.textContent = `“${quote.q}”`;
-        // Handle case where author might be missing or generic
-        quoteAuthorElement.textContent = `- ${quote.a || 'Unknown'}`; 
+        // The Quotable API returns structure: data.content and data.author
+        quoteTextElement.textContent = `“${data.content}”`;
+        quoteAuthorElement.textContent = `- ${data.author || 'Unknown'}`; 
 
     } catch (error) {
         console.error('Error fetching quote:', error);
-        quoteTextElement.textContent = "Error loading quote. Please check your network connection.";
+        // Display a helpful error message on the screen
+        quoteTextElement.textContent = "Error loading quote. Switching to backup source...";
         quoteAuthorElement.textContent = "";
+
+        // **Optional Backup Fallback (using a static quote)**
+        setTimeout(() => {
+            quoteTextElement.textContent = "“The best way to predict the future is to create it.”";
+            quoteAuthorElement.textContent = "- Peter Drucker";
+        }, 3000);
     }
 }
 
-// Initial call to load a quote immediately when the page loads
+// Initial call and interval refresh remains the same
 fetchAndDisplayQuote();
 
-// Set up the interval to refresh the quote every 60 seconds (60000 milliseconds)
 const REFRESH_INTERVAL_MS = 60000; 
-
 setInterval(fetchAndDisplayQuote, REFRESH_INTERVAL_MS);
