@@ -37,4 +37,5 @@ fetchAndDisplayQuote();
 
 // Set up the interval to refresh the quote every 60 seconds (60000 milliseconds)
 const REFRESH_INTERVAL_MS = 60000; 
+
 setInterval(fetchAndDisplayQuote, REFRESH_INTERVAL_MS);
