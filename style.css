@@ -1,0 +1,39 @@
+/* General reset and base styles */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #0d1a26; /* Dark background */
+    color: #f0f0f0; /* Light text */
+    text-align: center;
+}
+
+#quote-container {
+    width: 90%;
+    max-width: 1000px;
+    padding: 40px;
+    border-radius: 15px;
+    background: #1a2a33; /* Slightly lighter container */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+}
+
+#quote-text {
+    font-size: 3.5vw; /* Responsive font size */
+    font-weight: 300;
+    line-height: 1.4;
+    margin-bottom: 20px;
+    color: #e6e6e6;
+}
+
+#quote-author {
+    font-size: 1.8vw;
+    font-style: italic;
+    color: #a0c4ff; /* Accent color */
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #334756;
+}
