@@ -1,39 +1,49 @@
-/* General reset and base styles */
+/* Calming Grayscale Ombré Style */
 body {
-    font-family: Arial, sans-serif;
+    /* Set the background to a linear gradient */
+    background: linear-gradient(
+        to bottom, 
+        #555555, /* Start: Medium Gray (lighter for calming transition) */
+        #222222  /* End: Very Dark Gray (provides depth) */
+    );
+    
+    font-family: 'Georgia', serif; /* Elegant, readable serif font */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #0d1a26; /* Dark background */
-    color: #f0f0f0; /* Light text */
+    color: #ffffff; /* Default text color is white for directory info */
     text-align: center;
+    padding: 20px;
 }
 
 #quote-container {
     width: 90%;
     max-width: 1000px;
-    padding: 40px;
-    border-radius: 15px;
-    background: #1a2a33; /* Slightly lighter container */
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    padding: 50px;
+    border-radius: 8px;
+    /* We make the quote container semi-transparent white 
+       or fully transparent so the gradient shows through */
+    background: rgba(255, 255, 255, 0.1); /* Subtle, semi-transparent white background */
+    backdrop-filter: blur(2px); /* Optional: Slightly blur the background behind the box (modern browsers) */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Thin, subtle white border */
 }
 
 #quote-text {
-    font-size: 3.5vw; /* Responsive font size */
-    font-weight: 300;
-    line-height: 1.4;
-    margin-bottom: 20px;
-    color: #e6e6e6;
+    font-size: 3.2vw; 
+    font-weight: 400; /* Regular weight */
+    line-height: 1.5;
+    margin-bottom: 15px;
+    color: #ffffff; /* Pure white quote text */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Subtle shadow for readability on gradient */
 }
 
 #quote-author {
-    font-size: 1.8vw;
-    font-style: italic;
-    color: #a0c4ff; /* Accent color */
+    font-size: 1.5vw;
+    font-style: italic; /* Use italics for a softer, more calming feel */
+    font-weight: 300;
+    color: #eeeeee; /* Off-white for author */
     margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid #334756;
 }
