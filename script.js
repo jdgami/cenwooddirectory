@@ -1,12 +1,26 @@
 // Ensure the script runs only after the entire HTML document is loaded
 document.addEventListener('DOMContentLoaded', () => {
     
-    // 1. Get references to your HTML elements
     const quoteTextElement = document.getElementById('quote-text');
     const quoteAuthorElement = document.getElementById('quote-author');
-    const API_URL = 'https://api.quotable.io/random'; // The working API
     const REFRESH_INTERVAL_MS = 60000; // 60 seconds
 
+    // ----------------------------------------------------
+    // LOCAL QUOTE DATA: Add your own quotes here!
+    // ----------------------------------------------------
+    const localQuotes = [
+        { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+        { text: "The best way to predict the future is to create it.", author: "Peter Drucker" },
+        { text: "Strive not to be a success, but rather to be of value.", author: "Albert Einstein" },
+        { text: "Innovation distinguishes between a leader and a follower.", author: "Steve Jobs" },
+        { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+        { text: "Don't watch the clock; do what it does. Keep going.", author: "Sam Levenson" },
+        { text: "The mind is everything. What you think you become.", author: "Buddha" },
+        { text: "The power of imagination makes us infinite.", author: "John Muir" },
+        { text: "Perfection is not attainable, but if we chase perfection we can catch excellence.", author: "Vince Lombardi" },
+        { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" }
+    ];
+    
     // Safety Check
     if (!quoteTextElement || !quoteAuthorElement) {
         console.error("CRITICAL ERROR: Missing HTML elements.");
@@ -14,46 +28,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     /**
-     * Fetches a random quote from the Quotable API and updates the DOM.
+     * Selects a random quote from the local array and updates the DOM.
      */
-    async function fetchAndDisplayQuote() {
-        
-        // Show loading state only if the screen is currently empty
-        if (quoteTextElement.textContent === '') {
-             quoteTextElement.textContent = "Loading an inspiring quote...";
-             quoteAuthorElement.textContent = "";
+    function displayLocalQuote() {
+        if (localQuotes.length === 0) {
+            quoteTextElement.textContent = "Error: No quotes loaded locally.";
+            quoteAuthorElement.textContent = "";
+            return;
         }
+
+        // 1. Get a random index
+        const randomIndex = Math.floor(Math.random() * localQuotes.length);
+        const quote = localQuotes[randomIndex];
         
-        try {
-            const response = await fetch(API_URL);
-            
-            // Check for non-200 status codes
-            if (!response.ok) {
-                // Throwing here sends execution to the catch block, but it won't update the screen's content
-                throw new Error(`API error status: ${response.status}`);
-            }
-
-            const data = await response.json();
-            
-            // Success: Update the HTML elements
-            quoteTextElement.textContent = `“${data.content}”`;
-            quoteAuthorElement.textContent = `- ${data.author || 'Unknown'}`; 
-
-        } catch (error) {
-            console.error('Fetch error during quote attempt:', error);
-            
-            // If the initial load failed, display an error message
-            if (quoteTextElement.textContent.includes('Loading')) {
-                 quoteTextElement.textContent = "Error: Could not load quote. Check network.";
-                 quoteAuthorElement.textContent = "";
-            }
-        }
+        // 2. Update the HTML elements
+        quoteTextElement.textContent = `“${quote.text}”`;
+        quoteAuthorElement.textContent = `- ${quote.author || 'Unknown'}`; 
     }
 
     // Initial load
-    quoteTextElement.textContent = '';
-    fetchAndDisplayQuote();
+    quoteTextElement.textContent = "Loading local inspiration...";
+    quoteAuthorElement.textContent = "";
+    
+    displayLocalQuote();
 
     // Set up the interval to refresh the quote
-    setInterval(fetchAndDisplayQuote, REFRESH_INTERVAL_MS);
+    setInterval(displayLocalQuote, REFRESH_INTERVAL_MS);
 });
