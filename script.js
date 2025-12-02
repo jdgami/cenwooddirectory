@@ -4,24 +4,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Get references to your HTML elements
     const quoteTextElement = document.getElementById('quote-text');
     const quoteAuthorElement = document.getElementById('quote-author');
-    const API_URL = 'https://api.quotable.io/random'; 
+    
+    // *** NEW API URL: Type.fit Quotes ***
+    const API_URL = 'https://type.fit/api/quotes'; 
+    
     const REFRESH_INTERVAL_MS = 60000; // 60 seconds
 
-    // Safety Check: Exit if the required elements are not found in the HTML.
+    // Safety Check: Exit if the required elements are not found.
     if (!quoteTextElement || !quoteAuthorElement) {
-        console.error("CRITICAL ERROR: Could not find HTML elements with IDs 'quote-text' or 'quote-author'. Please check your index.html.");
+        console.error("CRITICAL ERROR: Missing HTML elements.");
         return; 
     }
     
     /**
-     * Fetches a random quote from the Quotable API and updates the DOM.
-     * This function now handles both initial load and interval refreshes.
+     * Fetches a random quote from the Type.fit API and updates the DOM.
      */
     async function fetchAndDisplayQuote() {
         
-        // On the very first load, we set a temporary 'Loading...' state.
-        // On subsequent interval refreshes, we let the old quote remain until the new one is ready (no flicker).
-        if (quoteTextElement.textContent === 'Loading...' || quoteTextElement.textContent === '') {
+        // Show loading state only if the screen is currently empty
+        if (quoteTextElement.textContent.includes('Error') || quoteTextElement.textContent === '') {
              quoteTextElement.textContent = "Loading an inspiring quote...";
              quoteAuthorElement.textContent = "";
         }
@@ -29,31 +30,39 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(API_URL);
             
-            // Check for non-200 status codes (e.g., 404, 500)
             if (!response.ok) {
                 throw new Error(`API error status: ${response.status}`);
             }
 
             const data = await response.json();
             
+            // The Type.fit API returns an array of ALL quotes. We pick one randomly.
+            const randomIndex = Math.floor(Math.random() * data.length);
+            const quote = data[randomIndex];
+            
             // Success: Update the HTML elements
-            quoteTextElement.textContent = `“${data.content}”`;
-            quoteAuthorElement.textContent = `- ${data.author || 'Unknown'}`; 
+            quoteTextElement.textContent = `“${quote.text}”`;
+            
+            // Note: Type.fit sometimes returns "type.fit" as the author, which we hide.
+            let author = quote.author || 'Unknown';
+            if (author === "type.fit") {
+                author = "Unknown";
+            }
+            
+            quoteAuthorElement.textContent = `- ${author}`; 
 
         } catch (error) {
             console.error('Fetch error during quote attempt:', error);
             
-            // If the *initial* load failed, display an error message for the user.
+            // If the initial load failed, display an error message for the user.
             if (quoteTextElement.textContent.includes('Loading')) {
-                 quoteTextElement.textContent = "Error: Could not load quote. Check the console for details.";
-                 quoteAuthorElement.textContent = "";
+                 quoteTextElement.textContent = "Error: Could not load quote. The API may be down.";
+                 quoteAuthorElement.textContent = "Check the browser console for network details.";
             }
-            // If it fails on an interval refresh, we do nothing, letting the old quote stay visible.
         }
     }
 
-    // Initial load: This is what you see when you first open the page.
-    // We set the initial text to trigger the loading state logic inside the function.
+    // Initial load
     quoteTextElement.textContent = '';
     fetchAndDisplayQuote();
 
